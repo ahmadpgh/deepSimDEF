@@ -18,6 +18,6 @@ In this project, by relying on the expressive power of deep neural networks, we 
 The datasets built in the study and employed in the evaluation analyses include (see the 'EXPERIMENTAL DATA' section, 'Validation datasets' subsection for detail):
 1. Sequence Homology Data (_~20,000 protein pairs_)
 2. Gene Expression Data (_~2,000,000 protein pairs_)
-3. PPI Data (_~32,000 protein pairs_)
+3. PPI Data (_~33,000 protein pairs_)
 
 _**The project is under completion at this moment.**_
