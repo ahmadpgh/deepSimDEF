@@ -21,5 +21,11 @@ The datasets built in the study and employed in the evaluation analyses include 
 2. Gene Expression Data (_~2,000,000 protein pairs_)
 3. PPI Data (_~33,000 protein pairs_)
 
+<br/>
 
 _**The project is under completion at this moment.**_
+
+<br>
+<br>
+
+<sub>Ahmad Pesaranghader © 2017</sub>
