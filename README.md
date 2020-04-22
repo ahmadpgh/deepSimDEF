@@ -1,4 +1,4 @@
-# deepSimDEF: Deep Definition-based Semantic Similarity of Gene Ontology-Term and Gene-Product Embeddings for Functional Analysis of Genes
+# deepSimDEF: deep neural embeddings of gene products and Gene Ontology terms for functional analysis of genes
 
 ## Motivation
 
