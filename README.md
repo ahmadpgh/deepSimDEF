@@ -10,22 +10,88 @@ As far as GO is concerned, most of existing gene functional similarity measures 
 
 ## Contribution
 
-In this project, by relying on the expressive power of deep neural networks, we lay out and develop deepSimDEF, an efficient method for measuring functional similarity of proteins and other gene products (e.g. microRNA and mRNA) using - natural language definitions of - GO terms annotating those genes. For this purpose, deepSimDEF neural network(s) (single-channel and multi-channel) learn low-dimensional vectors of GO terms and gene products and then learn how to calculate the functional similarity of protein pairs using these learned vectors (aka embeddings). Relative to existing similarity measures, when validated on a [yeast (_Saccharomyces cerevisiae_)](https://www.yeastgenome.org/) reference database, deepSimDEF improves correlation with [**sequence homology**](https://en.wikipedia.org/wiki/Sequence_homology) by up to 28%. deepSimDEF also outperforms the existing measures by great margins in the task of prediction of [**protein-protein interactions (PPIs)**](https://en.wikipedia.org/wiki/Protein%E2%80%93protein_interaction) and [**gene expression**](https://en.wikipedia.org/wiki/Gene_expression) analysis through the use of GO annotations.  
-  
-**Extra experiments:** Apart from remarkable results and the valuable distributed representations of GO terms and gene products, the introduction of the powerful yet flexible, easily transferable and adaptable architectures of deepSimDEF to a wide range of problems in [proteomics](https://en.wikipedia.org/wiki/Proteomics) and [genomics](https://en.wikipedia.org/wiki/Genomics) lies at the heart of this study. Along with these experiments, evaluation of [electronic GO annotations (IEAs)](http://geneontology.org/page/guide-go-evidence-codes), visualization of gene products for a deeper inference from the embeddings, and examination of transfer learning among various biological data and their associated networks shape other parts of our study.
+In this project, by relying on the expressive power of deep neural networks, we lay out and develop deepSimDEF, an efficient method for measuring functional similarity of proteins and other gene products (e.g. microRNA and mRNA) using - natural language definitions of - GO terms annotating those genes. For this purpose, deepSimDEF neural network(s) (single-channel and multi-channel) learn low-dimensional vectors of GO terms and gene products and then learn how to calculate the functional similarity of protein pairs using these learned vectors (aka embeddings). Relative to existing similarity measures, validation of deepSimDEF on yeast and human reference datasets yielded increases in [**protein-protein interactions (PPIs)**](https://en.wikipedia.org/wiki/Protein%E2%80%93protein_interaction) predictability by >4.5% and ~5%, respectively; a correlation improvement of ~9% and ~7% with yeast and human [**gene co-expression**](https://en.wikipedia.org/wiki/Gene_expression) values; and improved correlation with [**sequence homology**](https://en.wikipedia.org/wiki/Sequence_homology) by up to 6% for both organisms studied.
 
 ## Datasets for the evaluation
 
-The datasets built in the study and employed in the evaluation analyses include (see the 'EXPERIMENTAL DATA' section, 'Validation datasets' subsection for detail):
-1. Protein-Protein Interactions Data (_~33,000 protein pairs_)
-2. Gene Expression Data (_~2,000,000 protein pairs_)
-3. Sequence Homology Data (_~20,000 protein pairs_)
+The table below provides an overview of the prepared datasets for the evaluation tasks in the study (for more details refer to the paper). 
 
-<br/>
-
-_**The project is under completion at this moment.**_
+<table>
+  <tr>
+   <td>
+   </td>
+   <td colspan="2" ><strong>Yeast Dataset</strong>
+   </td>
+   <td colspan="2" ><strong>Human Dataset</strong>
+   </td>
+   <td rowspan="2" colspan="2" ><strong>Task</strong>
+   </td>
+  </tr>
+  <tr>
+   <td>
+   </td>
+   <td>Number of
+<p>
+gene pairs
+   </td>
+   <td>Number of
+<p>
+genes
+   </td>
+   <td>Number of
+<p>
+gene pairs
+   </td>
+   <td>Number of
+<p>
+genes
+   </td>
+  </tr>
+  <tr>
+   <td><strong>Protein-Protein Interaction</strong>
+   </td>
+   <td>55,030
+   </td>
+   <td>4,591
+   </td>
+   <td>78,512
+   </td>
+   <td>14,128
+   </td>
+   <td colspan="2" >Classification of protein interactions
+   </td>
+  </tr>
+  <tr>
+   <td><strong>Sequence Homology</strong>
+   </td>
+   <td>26,757
+   </td>
+   <td>3,972
+   </td>
+   <td>382,476
+   </td>
+   <td>13,638
+   </td>
+   <td colspan="2" >Prediction of sequence similarity score
+   </td>
+  </tr>
+  <tr>
+   <td><strong>Gene Expresion</strong>
+   </td>
+   <td>36,180
+   </td>
+   <td>2,117
+   </td>
+   <td>64,370
+   </td>
+   <td>2,404
+   </td>
+   <td colspan="2" >Prediction of co-expression value
+   </td>
+  </tr>
+</table>
 
 <br>
 <br>
 
-<sub>Ahmad Pesaranghader © 2017</sub>
+<sub>Ahmad Pesaranghader © 2021</sub>
