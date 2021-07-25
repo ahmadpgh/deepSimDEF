@@ -1,5 +1,5 @@
 <br>
-<img src="deepSimDEF/logo.png" width="120"> 
+<img align="left" src="deepSimDEF/logo.png" width="150"> 
 
 ## deepSimDEF: deep neural embeddings of gene products and Gene Ontology terms for functional analysis of genes
 
