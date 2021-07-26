@@ -111,13 +111,13 @@ genes</sub>
 
 ## Cite
 
-Please cite our dataset if you use this code and data in your work.
+Please cite our paper, code, and dataset if you use deepSimDEF in your work.
 
 ```
-@misc{deepsimdef2021,
+@article{,
   author = {Pesaranghader, Ahmad and Matwin, Stan and Sokolova, Marina and Beiko, Robert G, and Grenier, Jean-Christophe and Hussin, Julie},
   title = {deepSimDEF: deep neural embeddings of gene products and Gene Ontology terms for functional analysis of genes},
-  howpublished = "\url{https://github.com/ahmadpgh/deepSimDEF}",
+  journal = "{under review}",
   year = {2021}
 }
 ```
