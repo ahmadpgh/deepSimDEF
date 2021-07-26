@@ -107,12 +107,12 @@ genes</sub>
 
 
 ## Code Instruction
-The deepSimDEF networks were natively implemented and tested with tensorflow 2.2.0. For ease of use and also to avoide any platform misconfiguration and package incompatibility we recommend you have [Anaconda](https://www.anaconda.com/products/individual) downloaded and installed and then create a conda virtual environment with the `environment.yml` provided using:
+The deepSimDEF networks were natively implemented and tested using deep learning API tensorflow 2.2.0. For ease of use and also to avoide any platform misconfiguration and package incompatibility we recommend you have [Anaconda](https://www.anaconda.com/products/individual) downloaded and installed and then create a conda virtual environment with the `environment.yml` provided in the project using:
 ```
 conda env create -f environment.yml
 ```
 The first line of the yml file sets the new environment's name. <br>
-For further familiarity with conda commands, and to see how to activate an environment, please refer to [managing environments page](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html).
+For further familiarity with conda commands, especially to see how to activate an environment, please refer to [managing environments page](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html).
 
 ### Datasets
 The datasets prepared and used in the experiments of the study are provided in the `data` folder of the project under `data/species/[human/yeast]/` subdirectories. Since these datasets are generated based on the latest available resources (e.g., annotations of genes from Gene Ontology or PPI interactions from [String database](https://string-db.org/cgi/download?sessionId=bScolWa04rvN)) three jupyter notebooks which were responsible to create these datasets from the available data resources are shared in the `data` directory as well. For the generation of the same or more recent version of the datasets, follow the instruction provided in the jupyter notebooks. Typically the latest releases of the data resources would be downloaded by default unless otherwise is indicated or set by the user. The three jupyter notebooks, namely are:
