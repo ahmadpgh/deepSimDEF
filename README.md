@@ -28,7 +28,8 @@ In this project, by relying on the expressive power of deep neural networks, we 
 
 The table below provides an overview of the prepared datasets for the evaluation tasks in the study (for more details refer to the paper). 
 
- 
+
+<div align="center">
 <table>
   <tr>
    <td>
@@ -103,7 +104,7 @@ genes</sub>
    </td>
   </tr>
 </table>
-
+</div>
 
 <br>
 <br>
