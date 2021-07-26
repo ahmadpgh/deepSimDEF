@@ -108,11 +108,12 @@ genes</sub>
 
 
 ## Code Instruction
-The deepSimDEF networks were natively implemented and tested with tensorflow 2.2.0. For ease of use and also to avoide any platform misconfiguration and package incompatibility we recommend you have [Anaconda](https://www.anaconda.com/products/individual) downloaded and installed and then create a conda virtual environment with the `environment.yml` provided:
+The deepSimDEF networks were natively implemented and tested with tensorflow 2.2.0. For ease of use and also to avoide any platform misconfiguration and package incompatibility we recommend you have [Anaconda](https://www.anaconda.com/products/individual) downloaded and installed and then create a conda virtual environment with the `environment.yml` provided using:
 ```
 conda env create -f environment.yml
 ```
-for further familiarity with conda commands you can refer to [managing environments page](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html).
+The first line of the yml file sets the new environment's name. <br>
+For further familiarity with conda commands, and to see how to activate an environment, please refer to [managing environments page](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html).
 
 ## Cite
 
