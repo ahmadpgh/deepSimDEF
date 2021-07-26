@@ -28,80 +28,82 @@ In this project, by relying on the expressive power of deep neural networks, we 
 
 The table below provides an overview of the prepared datasets for the evaluation tasks in the study (for more details refer to the paper). 
 
+ 
 <table>
   <tr>
    <td>
    </td>
-   <td colspan="2" ><strong>Yeast Dataset</strong>
+   <td colspan="2" ><strong><sub>Yeast Dataset</sub></strong>
    </td>
-   <td colspan="2" ><strong>Human Dataset</strong>
+   <td colspan="2" ><strong><sub>Human Dataset</sub></strong>
    </td>
-   <td rowspan="2" colspan="2" ><strong>Task</strong>
+   <td rowspan="2" colspan="2" ><strong><sub>Task</sub></strong>
    </td>
   </tr>
   <tr>
    <td>
    </td>
-   <td>Number of
+   <td><sub>Number of
 <p>
-gene pairs
+gene pairs</sub>
    </td>
-   <td>Number of
+   <td><sub>Number of
 <p>
-genes
+genes</sub>
    </td>
-   <td>Number of
+   <td><sub>Number of
 <p>
-gene pairs
+gene pairs</sub>
    </td>
-   <td>Number of
+   <td><sub>Number of
 <p>
-genes
+genes</sub>
    </td>
   </tr>
   <tr>
-   <td><strong>Protein-Protein Interaction</strong>
+   <td><strong><sub>Protein-Protein Interaction</sub></strong>
    </td>
-   <td>55,030
+   <td><sub>55,030</sub>
    </td>
-   <td>4,591
+   <td><sub>4,591</sub>
    </td>
-   <td>78,512
+   <td><sub>78,512</sub>
    </td>
-   <td>14,128
+   <td><sub>14,128</sub>
    </td>
-   <td colspan="2" >Classification of protein interactions
-   </td>
-  </tr>
-  <tr>
-   <td><strong>Sequence Homology</strong>
-   </td>
-   <td>26,757
-   </td>
-   <td>3,972
-   </td>
-   <td>382,476
-   </td>
-   <td>13,638
-   </td>
-   <td colspan="2" >Prediction of sequence similarity score
+   <td colspan="2" ><sub>Classification of protein interactions</sub>
    </td>
   </tr>
   <tr>
-   <td><strong>Gene Expresion</strong>
+   <td><strong><sub>Sequence Homology</sub></strong>
    </td>
-   <td>36,180
+   <td><sub>26,757</sub>
    </td>
-   <td>2,117
+   <td><sub>3,972</sub>
    </td>
-   <td>64,370
+   <td><sub>382,476</sub>
    </td>
-   <td>2,404
+   <td><sub>13,638</sub>
    </td>
-   <td colspan="2" >Prediction of co-expression value
+   <td colspan="2" ><sub>Prediction of sequence similarity score</sub>
+   </td>
+  </tr>
+  <tr>
+   <td><strong><sub>Gene Expresion</sub></strong>
+   </td>
+   <td><sub>36,180</sub>
+   </td>
+   <td><sub>2,117</sub>
+   </td>
+   <td><sub>64,370</sub>
+   </td>
+   <td><sub>2,404</sub>
+   </td>
+   <td colspan="2" ><sub>Prediction of co-expression value</sub>
    </td>
   </tr>
 </table>
+
 
 <br>
 <br>
