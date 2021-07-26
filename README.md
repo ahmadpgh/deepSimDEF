@@ -106,9 +106,6 @@ genes</sub>
 </table>
 </div>
 
-<br>
-<br>
-
 ## Cite
 
 Please cite our paper, code, and dataset if you use deepSimDEF in your work.
