@@ -106,6 +106,14 @@ genes</sub>
 </table>
 </div>
 
+
+## Code Instruction
+The deepSimDEF networks were natively implemented and tested with tensorflow 2.2.0. For ease of use and also to avoide any platform misconfiguration and package incompatibility we recommend you have [Anaconda](https://www.anaconda.com/products/individual) downloaded and installed and then create a conda virtual environment with the `environment.yml` provided:
+```
+conda env create -f environment.yml
+```
+for further familiarity with conda commands you can refer to [managing environments page](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html).
+
 ## Cite
 
 Please cite our paper, code, and dataset if you use deepSimDEF in your work.
