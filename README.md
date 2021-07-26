@@ -109,4 +109,16 @@ genes</sub>
 <br>
 <br>
 
+## Cite
+
+Please cite our dataset if you use this code and data in your work.
+
+```
+@misc{deepsimdef2021,
+  author = {Pesaranghader, Ahmad and Matwin, Stan and Sokolova, Marina and Beiko, Robert G, and Grenier, Jean-Christophe and Hussin, Julie},
+  title = {deepSimDEF: deep neural embeddings of gene products and Gene Ontology terms for functional analysis of genes},
+  howpublished = "\url{https://github.com/ahmadpgh/deepSimDEF}",
+  year = {2021}
+}
+```
 <sub>Ahmad Pesaranghader © 2021</sub>
