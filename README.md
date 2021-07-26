@@ -19,8 +19,10 @@ As far as GO is concerned, most of existing gene functional similarity measures 
 In this project, by relying on the expressive power of deep neural networks, we lay out and develop deepSimDEF, an efficient method for measuring functional similarity of proteins and other gene products (e.g. microRNA and mRNA) using - natural language definitions of - GO terms annotating those genes. For this purpose, deepSimDEF neural network(s) (single-channel and multi-channel) learn low-dimensional vectors of GO terms and gene products and then learn how to calculate the functional similarity of protein pairs using these learned vectors (aka embeddings). Relative to existing similarity measures, validation of deepSimDEF on yeast and human reference datasets yielded increases in [**protein-protein interactions (PPIs)**](https://en.wikipedia.org/wiki/Protein%E2%80%93protein_interaction) predictability by >4.5% and ~5%, respectively; a correlation improvement of ~9% and ~7% with yeast and human [**gene co-expression**](https://en.wikipedia.org/wiki/Gene_expression) values; and improved correlation with [**sequence homology**](https://en.wikipedia.org/wiki/Sequence_homology) by up to 6% for both organisms studied.
 
 <br>
-<img align="left" src="imgs/deepSimDEF_multi_channel_network.jpg" width="10000"> 
-<br>
+<p align="center">
+<img src="imgs/deepSimDEF_multi_channel_network.jpg" width="940"> <br>
+</p>
+
 
 ### Datasets for the evaluation
 
