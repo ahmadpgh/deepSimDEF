@@ -21,7 +21,7 @@ In this project, by relying on the expressive power of deep neural networks, we 
 <p align="center">
 <img src="imgs/deepSimDEF_multi_channel_network.jpg" width="940"> <br>
 <br>
-<b>Figure</b>: deepSimDEF multi-channel network architecture.
+<b>Figure 1</b>: deepSimDEF multi-channel network architecture.
 </p>
 
 
@@ -123,9 +123,16 @@ The datasets prepared and used in the experiments of the study (see table above)
 * `gene_expression_data_prepration.ipynb`
 
 ### Gene Ontology Term Embedding
-Ideally, the first layer of a deepSimDEF network gets initialized by pre-trained GO-term embeddings while they get fine-tuned during training. This scheme facilitates network optimization and improves model accuracy. The precomputed embeddings are provided in `data/gene_ontology/definition_embedding/[50|100|150|200|300]_dimensional` directory. Regarding deepSimDEF networks and our experiments GO-term embedding size of 100 yielded the best results. 
+Ideally, the first layer of a deepSimDEF network gets initialized by pre-trained GO-term embeddings while they get fine-tuned during training. This scheme facilitates network optimization and improves model accuracy. The precomputed GO-term embeddings based on Fig. 2 are provided in `data/gene_ontology/definition_embedding/[50|100|150|200|300]_dimensional` directory. Regarding deepSimDEF networks and our experiments GO-term embedding size of 100 yielded the best results. 
 
 Since Gene Ontology gets constantly updated by having new terms added and a few old ones marked as obsolete (if needed), the jupyter notebook `gene_ontology_term_embedding.ipynb` allows you to create GO-term embeddings of the latest release of GO in the future (follow the instruction in the jupyter notebook and make sure you have enough amount of physical memory). Additionally, the jupyter networks `embeddings_similarity_evaluation.ipynb` allows to evaluate the quality of the generated embeddings based on their "semantic" similarity.
+
+<br>
+<p align="center">
+<img src="imgs/deepSimDEF_GO_term_embedding.jpg" width="940"> <br>
+<br>
+<b>Figure 2</b>: deepSimDEF definition-based GO-term embedding approach.
+</p>
 
 ## Cite
 
