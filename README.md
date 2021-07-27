@@ -126,7 +126,7 @@ The datasets prepared and used in the experiments of the study (see table above)
 Ideally, the first layer of a deepSimDEF network gets initialized by pre-trained GO-term embeddings while they get fine-tuned during training. This scheme facilitates network optimization and improves model accuracy. The precomputed GO-term embeddings based on Fig. 2 are provided in `data/gene_ontology/definition_embedding/[50|100|150|200|300]_dimensional` directory. Regarding deepSimDEF networks and our experiments GO-term embedding size of 100 yielded the best results (see the paper). 
 <br>
 <p align="center">
-<img src="imgs/deepSimDEF_GO_term_embedding.jpg" width="600"> <br>
+<img src="imgs/deepSimDEF_GO_term_embedding.jpg" width="650"> <br>
 <br>
 <b>Figure 2</b>: deepSimDEF definition-based GO-term embedding approach.
 </p>
