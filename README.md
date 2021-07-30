@@ -70,13 +70,13 @@ genes</sub>
   <tr>
    <td><strong><sub>Protein-Protein Interaction</sub></strong>
    </td>
-   <td><sub>55,030</sub>
+   <td><sub>50,154</sub>
    </td>
    <td><sub>4,591</sub>
    </td>
-   <td><sub>78,512</sub>
+   <td><sub>65,542</sub>
    </td>
-   <td><sub>14,128</sub>
+   <td><sub>14,096</sub>
    </td>
    <td colspan="2" ><sub>Classification of protein interactions</sub>
    </td>
@@ -88,9 +88,9 @@ genes</sub>
    </td>
    <td><sub>3,972</sub>
    </td>
-   <td><sub>382,476</sub>
+   <td><sub>381,379</sub>
    </td>
-   <td><sub>13,638</sub>
+   <td><sub>13,626</sub>
    </td>
    <td colspan="2" ><sub>Prediction of sequence similarity score</sub>
    </td>
@@ -98,13 +98,13 @@ genes</sub>
   <tr>
    <td><strong><sub>Gene Expresion</sub></strong>
    </td>
-   <td><sub>36,180</sub>
+   <td><sub>37,405</sub>
    </td>
-   <td><sub>2,117</sub>
+   <td><sub>2,239</sub>
    </td>
-   <td><sub>64,370</sub>
+   <td><sub>62,470</sub>
    </td>
-   <td><sub>2,404</sub>
+   <td><sub>2,361</sub>
    </td>
    <td colspan="2" ><sub>Prediction of co-expression value</sub>
    </td>
