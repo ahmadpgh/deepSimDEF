@@ -122,6 +122,8 @@ The datasets prepared and used in the experiments of the study (see table above)
 * `sequence_homology_data_prepration.ipynb`
 * `gene_expression_data_prepration.ipynb`
 
+Notice: Since the gene expression dataset is built from the protected [GTEx database](https://gtexportal.org/home/) with restricted access, the generated data is password protected in its directory. Please contact us to see if we can help you with granting access.
+
 ### Gene Ontology Term Embedding
 Ideally, the first layer of a deepSimDEF network gets initialized by pre-trained GO-term embeddings while they get fine-tuned during training. This scheme facilitates network optimization and improves model accuracy. The precomputed GO-term embeddings based on Fig. 2 are provided in `data/gene_ontology/definition_embedding/[50|100|150|200|300]_dimensional` directory (GO release version: 2021-07-02). Regarding deepSimDEF networks and our experiments GO-term embedding size of 100 yielded the best results (see the paper). 
 <br>
