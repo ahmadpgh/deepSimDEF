@@ -124,7 +124,7 @@ To activate the environment with the current name use:
 ```
 conda activate deepSimDEF_env
 ```
-For further familiarity with conda commands please refer to [managing environments page](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html).
+You should be able to run the project code from this point forward. Also, for further familiarity with conda commands, please refer to [managing environments page](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html).
 
 ### Datasets
 The datasets prepared and used in the experiments of the study (see table above) are provided in the `data` folder of the project under `data/species/[human|yeast]/` subdirectories. Since these datasets are generated based on the latest available resources at the time (e.g., annotations of genes from Gene Ontology, or PPI interactions from [STRING database](https://string-db.org/cgi/download?sessionId=bScolWa04rvN), etc) three jupyter notebooks which were responsible to create these datasets from the available data resources are shared in the `data` directory as well. For the generation of the same or more recent version of the datasets, follow the instruction provided in the jupyter notebooks. Typically the latest releases of the data resources would be downloaded by default unless otherwise is indicated or set by the user. The three jupyter notebooks, namely are:
