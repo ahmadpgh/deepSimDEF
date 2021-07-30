@@ -8,6 +8,7 @@
 ## deepSimDEF: deep neural embeddings of gene products and Gene Ontology terms for functional analysis of genes
 
 <br>
+<br>
 
 ### Motivation
 
