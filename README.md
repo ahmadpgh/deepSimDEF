@@ -1,3 +1,7 @@
+![Language](https://img.shields.io/badge/language-Python-blue.svg)
+![Stars](https://img.shields.io/github/stars/ahmadpgh/deepSimDEF?color=r)
+![Repo Size](https://img.shields.io/github/repo-size/ahmadpgh/deepSimDEF?color=tomato)
+
 <br>
 <img align="left" src="imgs/dna_logo.png" width="110"> 
 
