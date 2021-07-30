@@ -134,6 +134,12 @@ Ideally, the first layer of a deepSimDEF network gets initialized by pre-trained
 </p>
 Since Gene Ontology gets constantly updated by having new terms added and a few old ones marked as obsolete (if needed), the jupyter notebook <code>gene_ontology_term_embedding.ipynb</code> allows you to create GO-term embeddings of the latest release of GO in the future (follow the instruction in the jupyter notebook and make certain you have enough physical memory). In case not enough resources are available, for the new GO term, the avarage of all the current GO-terms embeddings (or their immediate neighbor GO-terms embeddings) could also represent the embeddings and most probabely help with your application. Additionally, the jupyter networks <code>embeddings_similarity_evaluation.ipynb</code> allows to evaluate the quality of the generated embeddings based on their "semantic" similarity.
 
+### Gene-GO term Associations
+The Gene Ontology Consortium stores annotation data, the representation of gene product attributes using GO terms, in [standardized tab-delimited text files named GAF files](http://current.geneontology.org/products/pages/downloads.html). Each line in the file represents a single association between a gene product and a GO term, with an evidence code and the reference to support the link. These annotations from the latest GAF files for Yeast and Human are processed and the results annotations for the genes of interest are saved in `data/species/[human|yeast]/association_file/processed/` directories (IEA+ and IEA-). Additionally, the jupyter notebook of this process is included in the `data` directory for future use; it is named: `gene_association_and_annotations_preprocessing.ipynb`.
+
+
+### deepSimDEF Model and Networks
+
 
 ## Cite
 
