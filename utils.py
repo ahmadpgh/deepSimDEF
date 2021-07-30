@@ -9,22 +9,12 @@ import math
 import tensorflow.keras
 import tensorflow as tf
 
-from tensorflow.keras import regularizers, initializers, optimizers
-from tensorflow.python.keras.layers import Input, Embedding, AveragePooling1D, MaxPooling1D, Flatten, Dense, Dropout
-from tensorflow.python.keras.layers import Activation, Reshape, Multiply, Add, Lambda, SpatialDropout1D, InputSpec, Dot
-from tensorflow.python.keras.layers.merge import Concatenate
-from tensorflow.python.keras.layers.noise import GaussianDropout, GaussianNoise
-from tensorflow.keras.models import Model, model_from_json
-from tensorflow.compat.v1.keras import backend as K
+from tensorflow.python.keras.layers import Dropout
 from tensorflow.keras.callbacks import Callback
+from sklearn.metrics import f1_score, precision_score, recall_score
 
-from scipy.stats.stats import pearsonr, spearmanr
-from sklearn.metrics import confusion_matrix, f1_score, precision_score, recall_score
-
-import easydict
 import socket
 import datetime
-from pytz import timezone
 
 import collections
 from collections import OrderedDict

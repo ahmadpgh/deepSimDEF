@@ -1,35 +1,11 @@
-import os
 import sys
 import logging
-import random
-import operator
 import numpy as np
-import math
-import tensorflow.keras
-import tensorflow as tf
-
-from tensorflow.keras import regularizers, initializers, optimizers
-from tensorflow.python.keras.layers import Input, Embedding, AveragePooling1D, MaxPooling1D, Flatten, Dense, Dropout
-from tensorflow.python.keras.layers import Activation, Reshape, Multiply, Add, Lambda, SpatialDropout1D, InputSpec, Dot
-from tensorflow.python.keras.layers.merge import Concatenate
-from tensorflow.python.keras.layers.noise import GaussianDropout, GaussianNoise
-from tensorflow.keras.models import Model, model_from_json
-from tensorflow.compat.v1.keras import backend as K
-from tensorflow.keras.callbacks import Callback
-
-from scipy.stats.stats import pearsonr, spearmanr
-from sklearn.metrics import confusion_matrix, f1_score, precision_score, recall_score
-
-import easydict
-import socket
-import datetime
-from pytz import timezone
 
 import collections
-from collections import OrderedDict
 from utils import *
 
-def ppi_dataset(data_dir, data_file_name, sub_ontology_all, fully_annotated_genes, 
+def ppi_dataset(data_dir, data_file_name, fully_annotated_genes, 
                               gene_annotations, gene_indeces, max_ann_len, partial_shuffle_percent, sub_ontology_interested):
     """Function to read the ppi file (contains positive and negative samples) and return a balanced dataset"""
     annotation_G1, annotation_G2 = {}, {}
@@ -61,7 +37,7 @@ def ppi_dataset(data_dir, data_file_name, sub_ontology_all, fully_annotated_gene
             
     return G1, G2, annotation_G1, annotation_G2, interaction_pred
 
-def sequence_homology_dataset(data_dir, data_file_name, sub_ontology_all, fully_annotated_genes, gene_annotations,
+def sequence_homology_dataset(data_dir, data_file_name, fully_annotated_genes, gene_annotations,
                               gene_indeces, max_ann_len, sequence_homology_metric, partial_shuffle_percent, sub_ontology_interested):
     """Function to read the ppi file (contains positive and negative samples) and return a balanced dataset"""
     annotation_G1, annotation_G2 = {}, {}
@@ -90,7 +66,7 @@ def sequence_homology_dataset(data_dir, data_file_name, sub_ontology_all, fully_
             
     return G1, G2, annotation_G1, annotation_G2, interaction_pred
 
-def gene_expression_dataset(data_dir, data_file_name, sub_ontology_all, fully_annotated_genes, gene_annotations,
+def gene_expression_dataset(data_dir, data_file_name, fully_annotated_genes, gene_annotations,
                               gene_indeces, max_ann_len, partial_shuffle_percent, sub_ontology_interested):
     """Function to read the ppi file (contains positive and negative samples) and return a balanced dataset"""
     annotation_G1, annotation_G2 = {}, {}

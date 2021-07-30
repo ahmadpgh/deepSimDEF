@@ -5,9 +5,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # or any {'0', '1', '2'}
 import sys
 import logging
 import random
-import operator
 import numpy as np
-import math
 import pprint
 import argparse
 import tensorflow.keras
@@ -17,24 +15,13 @@ tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 from networks import deepSimDEF_network
 from datasets import gene_expression_dataset
 from dataloaders import generic_dataloader
-from tensorflow.keras import regularizers, initializers, optimizers
-from tensorflow.python.keras.layers import Input, Embedding, AveragePooling1D, MaxPooling1D, Flatten, Dense, Dropout
-from tensorflow.python.keras.layers import Activation, Reshape, Multiply, Add, Lambda, SpatialDropout1D, InputSpec, Dot
-from tensorflow.python.keras.layers.merge import Concatenate
-from tensorflow.python.keras.layers.noise import GaussianDropout, GaussianNoise
-from tensorflow.keras.models import Model, model_from_json
-from tensorflow.compat.v1.keras import backend as K
-from tensorflow.keras.callbacks import Callback
 
 from scipy.stats.stats import pearsonr, spearmanr
-from sklearn.metrics import confusion_matrix, f1_score, precision_score, recall_score
 
-import socket
 import datetime
 from pytz import timezone
 
 import collections
-from collections import OrderedDict
 from utils import *
 
 tz = timezone('US/Eastern')  # To monitor training time (showing start & end points of a fixed timezone when the code runs on a remote server)
@@ -274,7 +261,7 @@ if __name__ == "__main__":
     nb_test_genes = int(VALIDATION_SPLIT * len(fully_annotated_genes))
 
     gene_1, gene_2, gene_1_annotation, gene_2_annotation, prediction_value = gene_expression_dataset(
-        gene_expression_data_dir, data_file_name, sub_ontology_all, fully_annotated_genes, gene_annotations,
+        gene_expression_data_dir, data_file_name, fully_annotated_genes, gene_annotations,
         gene_indeces, max_ann_len, args.partial_shuffle_percent, sub_ontology_interested)
 
     VALIDATION_SPLIT = 1.0/args.nb_fold
