@@ -109,7 +109,7 @@ genes</sub>
 
 
 ## Code Instruction
-The deepSimDEF networks were natively implemented and tested using deep learning API [tensorflow](https://www.tensorflow.org/) 2.2.0. For ease of use and also to avoide any platform misconfiguration and package incompatibility we recommend you have [Anaconda](https://www.anaconda.com/products/individual) downloaded and installed and then create a conda virtual environment with the `environment.yml` provided in the project using:
+The deepSimDEF networks were natively implemented and tested using deep learning API [tensorflow](https://www.tensorflow.org/) 2.4.0. For ease of use and also to avoide any platform misconfiguration and package incompatibility we recommend you have [Anaconda](https://www.anaconda.com/products/individual) downloaded and installed and then create a conda virtual environment with the `environment.yml` provided in the project using:
 ```
 conda env create -f environment.yml
 ```
