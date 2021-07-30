@@ -67,7 +67,7 @@ parser.add_argument('--save_interval', default=5, type=int, help='-1, checkpoint
 parser.add_argument('--sub_ontology', default='all', type=str, help='considering annotations of what subontologies, "bp", "cc", "mf", or "all" (default: "all")')
 parser.add_argument('--verbose', default=False, type=bool, help='if print extra information during model training')
 parser.add_argument('--inpute_file', default='default', type=str, help='inpute file of the gene product terms and the score(s), if not provide use default file')
-parser.add_argument('--log_dir', default='log/', type=str, help='base log folder (will be created if it does not exist)')
+parser.add_argument('--log_dir', default='logs/', type=str, help='base log folder (will be created if it does not exist)')
 parser.add_argument('--log_name', default='SH_test', type=str, help='prefix name to use when logging this model')
 parser.add_argument('--reproducible', default=True, type=bool, help='whether we want to have a reproducible result (mostly helpful with training on a CPU at the cost of training speed)')
 parser.add_argument('--seed', default=313, type=int, help='seed used for Random Number Generation if "reproducible=True"')
