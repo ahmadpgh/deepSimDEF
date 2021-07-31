@@ -1,4 +1,4 @@
-# CUDA_VISIBLE_DEVICES=3 python deepSimDEF_for_gene_expression.py
+# CUDA_VISIBLE_DEVICES=gpu-number python deepSimDEF_for_gene_expression.py arguments
 
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # or any {'0', '1', '2'}
@@ -30,41 +30,51 @@ pp = pprint.PrettyPrinter(indent=4)
 #checkpoint = '[base_dir]/2020.03.04-23h40m37s_server_name/model_checkpoints/epoch_58'
 checkpoint = None
 
-parser = argparse.ArgumentParser(description='Process some integers.')
-parser.add_argument('--nb_fold', default=2, type=int, help='number of folds of training and evaluation in n-fold cross-validation (default: 10)')
+parser = argparse.ArgumentParser(description='Calculate gene-product pairs similarity.')
+
+# experiment arguments
+parser.add_argument('--nb_fold', default=10, type=int, help='number of folds of training and evaluation in n-fold cross-validation (default: 10)')
+parser.add_argument('--iea', default=True, type=str2bool, help='whether to consider "inferred from electronic annotations" or not')
+parser.add_argument('--sub_ontology', default='all', type=str, help='considering annotations of what subontologies, "bp", "cc", "mf", or "all" (default: "all")')
+parser.add_argument('--inpute_file', default='default', type=str, help='inpute file of the gene product terms and the score(s), if not provide use default file')
+parser.add_argument('--experiment_mode', default=2, type=int, help='1: any pairs of unseen genes; 2: only pair in which both genes are unseen')
+parser.add_argument('--partial_shuffle_percent', default=0.0, type=float, help='Should be more than 0.0 for "Negative Control" experiments (default: 0.0)')
+parser.add_argument('--species', default='yeast', type=str, help='the species of interest for evaluation (human, yeast, etc)')
+
+# network arguments
 parser.add_argument('--dropout', default=0.3, type=float, help='dropout applied to dense layers of the network (default: 0.3)')
 parser.add_argument('--embedding_dropout', default=0.15, type=float, help='dropout applied to embedding layers of the network; i.e., percentage of features dropped out completely (default: 0.15)')
 parser.add_argument('--annotation_dropout', default=0.0, type=float, help='dropout applied to annotations of a gene at training time; i.e., percentage of annotations ignored (default: 0.0)')
-parser.add_argument('--pretrained_embedding', default=True, type=bool, help='whether the GO term embeddings loaded should be computed in advance from a pretrained unsupervised model (default: True)')
-parser.add_argument('--updatable_embedding', default=True, type=bool, help='whether the GO term embeddings should be updatable during the traning (default: True)')
+parser.add_argument('--pretrained_embedding', default=True, type=str2bool, help='whether the GO term embeddings loaded should be computed in advance from a pretrained unsupervised model (default: True)')
+parser.add_argument('--updatable_embedding', default=True, type=str2bool, help='whether the GO term embeddings should be updatable during the traning (default: True)')
 parser.add_argument('--activation_hidden', default='relu', type=str, help='activation function of hidden layers (default: "relu")')
 parser.add_argument('--activation_highway', default='relu', type=str, help='activation function of highway layer (default: "relu")')
 parser.add_argument('--activation_output', default='linear', type=str, help='activation function of last, i.e. output, layer (default: "linear")')
 parser.add_argument('--embedding_dim', default=100, type=int, help='dimentionality of GO term embeddings, i.e. number of latent features (default: 100)')
-parser.add_argument('--nb_epoch', default=2, type=int, help='number of epochs for training')
+parser.add_argument('--highway_layer', default=True, type=str2bool, help='True if highway layer instead of cosince similarity (default: True)')
+parser.add_argument('--cosine_similarity', default=False, type=str2bool, help='True cosince similarity instead of highway layer (default: False)')
+
+# training arguments
+parser.add_argument('--nb_epoch', default=400, type=int, help='number of epochs for training')
 parser.add_argument('--batch_size', default=256, type=int, help='batch size (default: 256)')
 parser.add_argument('--loss', default='mean_squared_error', type=str, help='loss type of the onjective function that gets optimized ("binary_crossentropy" or "mean_squared_error")')
 parser.add_argument('--optimizer', default='adam', type=str, help='optimizer algorithm, can be: "adam", "rmsprop", etc. (default: "adam")')
 parser.add_argument('--learning_rate', default=0.001, type=float, help='starting learning rate for optimization')
-parser.add_argument('--iea', default=True, type=bool, help='whether to consider "inferred from electronic annotations" or not')
+parser.add_argument('--adaptive_lr', default=True, type=str2bool, help='whether to use adavtive learning rate or not')
+parser.add_argument('--adaptive_lr_rate', default=10, type=int, help='after how many epoch, decay the learning rate')
+
+# checkpointting arguments
 parser.add_argument('--checkpoint', default=checkpoint, help='starting from scratch or using model checkpoints')
-parser.add_argument('--save_model', default=False, type=bool, help='model checkpointing, whether to save the models during training')
-parser.add_argument('--save_embeddings', default=False, type=bool, help='storing weights of the embedding layers, whether to save updated embeddings')
+parser.add_argument('--save_model', default=False, type=str2bool, help='model checkpointing, whether to save the models during training')
+parser.add_argument('--save_embeddings', default=False, type=str2bool, help='storing weights of the embedding layers, whether to save updated embeddings')
 parser.add_argument('--save_interval', default=5, type=int, help='-1, checkpoint if see improvement in the result; otherwise after each interval (default: -1)')
-parser.add_argument('--sub_ontology', default='all', type=str, help='considering annotations of what subontologies, "bp", "cc", "mf", or "all" (default: "all")')
-parser.add_argument('--verbose', default=False, type=bool, help='if print extra information during model training')
-parser.add_argument('--inpute_file', default='default', type=str, help='inpute file of the gene product terms and the score(s), if not provide use default file')
 parser.add_argument('--log_dir', default='logs/', type=str, help='base log folder (will be created if it does not exist)')
 parser.add_argument('--log_name', default='GE_test', type=str, help='prefix name to use when logging this model')
-parser.add_argument('--reproducible', default=True, type=bool, help='whether we want to have a reproducible result (mostly helpful with training on a CPU at the cost of training speed)')
+
+# misc arguments
+parser.add_argument('--verbose', default=False, type=str2bool, help='if print extra information during model training')
+parser.add_argument('--reproducible', default=True, type=str2bool, help='whether we want to have a reproducible result (mostly helpful with training on a CPU at the cost of training speed)')
 parser.add_argument('--seed', default=313, type=int, help='seed used for Random Number Generation if "reproducible=True"')
-parser.add_argument('--experiment_mode', default=2, type=int, help='1: any pairs of unseen genes; 2: only pair in which both genes are unseen')
-parser.add_argument('--partial_shuffle_percent', default=0.0, type=float, help='Should be more than 0.0 for "Negative Control" experiments (default: 0.0)')
-parser.add_argument('--highway_layer', default=True, type=bool, help='True if highway layer instead of cosince similarity (default: True)')
-parser.add_argument('--cosine_similarity', default=False, type=bool, help='True cosince similarity instead of highway layer (default: False)')
-parser.add_argument('--species', default='yeast', type=str, help='the species of interest for evaluation (human, yeast, etc)')
-parser.add_argument('--adaptive_lr', default=True, type=bool, help='whether to use adavtive learning rate or not')
-parser.add_argument('--adaptive_lr_rate', default=10, type=int, help='after how many epoch, decay the learning rate')
 
 
 def fit_gene_expression(models, args):
