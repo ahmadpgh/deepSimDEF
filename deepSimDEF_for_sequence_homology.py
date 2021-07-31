@@ -75,7 +75,7 @@ parser.add_argument('--log_name', default='SH_test', type=str, help='prefix name
 # misc arguments
 parser.add_argument('--verbose', default=False, type=str2bool, help='if print extra information during model training')
 parser.add_argument('--reproducible', default=True, type=str2bool, help='whether we want to have a reproducible result (mostly helpful with training on a CPU at the cost of training speed)')
-parser.add_argument('--seed', default=313, type=int, help='seed used for Random Number Generation if "reproducible=True"')
+parser.add_argument('--seed', default=2021, type=int, help='seed used for Random Number Generation if "reproducible=True"')
 
 
 def fit_sequence_homology(models, args):
