@@ -30,7 +30,7 @@ In this project, by relying on the expressive power of deep neural networks, we 
 </p>
 
 For a picturial view of a single-channel deepSimDEF see: [deepSimDEF_single_channel_BP](https://github.com/ahmadpgh/deepSimDEF/blob/master/imgs/deepSimDEF_single_channel_BP.jpg)
-### Datasets for deepSimDEF evaluation
+### Datasets for deepSimDEF Evaluation
 
 The table below provides an overview of the prepared datasets for the evaluation tasks in the study (for more details refer to the paper). 
 
