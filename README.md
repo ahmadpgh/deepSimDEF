@@ -153,14 +153,30 @@ The Gene Ontology Consortium stores annotation data, the representation of gene 
 
 ## Cite
 
-Please cite our paper, code, and dataset if you use them in your work.
+Please cite our papers, code, and dataset if you use them in your work.
 
+deepSimDEF paper, and aforementioned code, and dataset:
 ```
 @article{,
-  author = {Pesaranghader, Ahmad and Matwin, Stan and Sokolova, Marina and Beiko, Robert G, and Grenier, Jean-Christophe and Hussin, Julie},
   title = {deepSimDEF: deep neural embeddings of gene products and Gene Ontology terms for functional analysis of genes},
-  journal = "{under review}",
-  year = {2021}
+  author = {Pesaranghader, Ahmad and Matwin, Stan and Sokolova, Marina and Beiko, Robert G, and Grenier, Jean-Christophe and Hussin, Julie},
+  journal = {under review},
+  year = {2021},
+  publisher={under review}
+}
+```
+
+[simDEF](https://academic.oup.com/bioinformatics/article/32/9/1380/1743954) paper:
+```
+@article{pesaranghader2016simdef,
+  title={simDEF: definition-based semantic similarity measure of gene ontology terms for functional similarity analysis of genes},
+  author={Pesaranghader, Ahmad and Matwin, Stan and Sokolova, Marina and Beiko, Robert G},
+  journal={Bioinformatics},
+  volume={32},
+  number={9},
+  pages={1380--1387},
+  year={2016},
+  publisher={Oxford University Press}
 }
 ```
 <sub>Ahmad Pesaranghader © 2021</sub>
