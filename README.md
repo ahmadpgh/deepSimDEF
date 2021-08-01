@@ -178,7 +178,7 @@ deepSimDEF paper, and aforementioned code, and dataset:
 ```
 @article{,
   title = {deepSimDEF: deep neural embeddings of gene products and Gene Ontology terms for functional analysis of genes},
-  author = {Pesaranghader, Ahmad and Matwin, Stan and Sokolova, Marina and Beiko, Robert G, and Grenier, Jean-Christophe and Hussin, Julie},
+  author = {Pesaranghader, Ahmad and Matwin, Stan and Sokolova, Marina and Grenier, Jean-Christophe and Beiko, Robert G and Hussin, Julie},
   journal = {under review},
   year = {2021},
   publisher={under review}
