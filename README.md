@@ -20,7 +20,7 @@ Existing GO-based gene functional similarity measures combine semantic similarit
 
 ### Contribution
 
-In this project, by relying on the expressive power of deep neural networks, we introduce and develop deepSimDEF, an efficient method for measuring functional similarity of proteins and other gene products (e.g. microRNA and mRNA) using - natural language definitions of - GO terms annotating those genes. For this purpose, deepSimDEF neural network(s) (single-channel and multi-channel) learn low-dimensional vectors of GO terms and gene products and then learn how to calculate the functional similarity of protein pairs using these learned vectors (aka embeddings). Relative to existing similarity measures, validation of deepSimDEF on yeast and human reference datasets yielded increases in [protein-protein interactions (PPIs)](https://en.wikipedia.org/wiki/Protein%E2%80%93protein_interaction) predictability by >4.5% and ~5%, respectively; a correlation improvement of ~9% and ~6% with yeast and human [gene co-expression](https://en.wikipedia.org/wiki/Gene_expression) values; and improved correlation with [sequence homology](https://en.wikipedia.org/wiki/Sequence_homology) by up to 6% for both organisms studied.
+In this project, by relying on the expressive power of deep neural networks, we introduce and develop deepSimDEF, an efficient method for measuring functional similarity of proteins and other gene products (e.g. microRNA and mRNA) using - natural language definitions of - GO terms annotating those genes. For this purpose, deepSimDEF neural network(s) (single-channel, and multi-channel depicted in Fig. 1) learn low-dimensional vectors of GO terms and gene products and then learn how to calculate the functional similarity of protein pairs using these learned vectors (aka embeddings). Relative to existing similarity measures, validation of deepSimDEF on yeast and human reference datasets yielded increases in [protein-protein interactions (PPIs)](https://en.wikipedia.org/wiki/Protein%E2%80%93protein_interaction) predictability by >4.5% and ~5%, respectively; a correlation improvement of ~9% and ~6% with yeast and human [gene co-expression](https://en.wikipedia.org/wiki/Gene_expression) values; and improved correlation with [sequence homology](https://en.wikipedia.org/wiki/Sequence_homology) by up to 6% for both organisms studied.
 
 <br>
 <p align="center">
@@ -29,7 +29,7 @@ In this project, by relying on the expressive power of deep neural networks, we 
 <b>Figure 1</b>: deepSimDEF multi-channel network architecture.
 </p>
 
-
+For a picturial view of a single-channel deepSimDEF see: [deepSimDEF_single_channel_BP](https://github.com/ahmadpgh/deepSimDEF/blob/master/imgs/deepSimDEF_single_channel_BP.jpg)
 ### Datasets for deepSimDEF evaluation
 
 The table below provides an overview of the prepared datasets for the evaluation tasks in the study (for more details refer to the paper). 
@@ -147,9 +147,26 @@ Since Gene Ontology gets constantly updated by having new terms added and a few 
 ### Gene-GO term Associations
 The Gene Ontology Consortium stores annotation data, the representation of gene product attributes using GO terms, in [standardized tab-delimited text files named GAF files](http://current.geneontology.org/products/pages/downloads.html). Each line in the file represents a single association between a gene product and a GO term, with an evidence code and the reference to support the link. These annotations from the latest GAF files for Yeast and Human are processed and the results annotations for the genes of interest are saved in `data/species/[human|yeast]/association_file/processed/` directories (IEA+ and IEA-). Additionally, the jupyter notebook of this process is included in the `data` directory for future use; it is named: `gene_association_and_annotations_preprocessing.ipynb`.
 
-
 ### deepSimDEF Model and Networks
+With respect to the three experiments described above three different main python scripts are provided:
+* `deepSimDEF_for_protein_protein_interaction.py`
+* `deepSimDEF_for_sequence_homology.py`
+* `deepSimDEF_for_gene_expression.py`
 
+We recommend running these scripts on GPUs with a command similar to:
+
+```
+CUDA_VISIBLE_DEVICES=gpu-number python deepSimDEF_for_protein_protein_interaction.py arguments
+```
+A sample of such run for human species and BP sub-ontology (hence single-channel deepSimDEF) could be:
+```
+CUDA_VISIBLE_DEVICES=0 python deepSimDEF_for_protein_protein_interaction.py --species human --sub_ontology bp
+```
+
+All these scripts make use of the deepSimDEF network implementation provided in `networks.py` script. We strictly advise you to read the description of the arguments in these main files as they provide ample information regarding how to set a run of your interest properly. Briefly, though, these scripts could be run on either three deepSimDEF modes: training (default), evaluation, or production.
+* In **training mode**, as the name suggests, the model(s) would be trained and evaluated on the fly (number of models would be equal to the number of folds). During this process, the statistical results would be logged and the network(s) would be checkpointed according to the provided setting in the arguments. For training and evaluation, by default, the model(s) use data provided with this project unless you provide another set of data with `--inpute_file` (ideally prepared by the preparation `.ipynb` files).
+* In **evaluation mode**, after providing checkpointed model(s), the statistical results of interests for the test split(s) would be printed out (should obtain similar results from the same epoch in the training mode). These statistical results are F1-score for the PPI experiment, and Pearson's and Spearman's correlation values for the sequence homology and gene expression experiments.
+* In **production mode**, after providing a checkpointed model (typically "trained" on all existing data by setting `--nb_fold 1`) as well as a file of (typically new) gene-product pairs, the estimated scores of them would be saved or printed out. For this purpose, in the `--production_input_file` each gene-product pair should be shown on one line while gene names are separated by a tab or space). NOTICE: In this mode, if a gene in the gene pair is not present in the given processed association files or it has GO annotations not seen before during training, their pairs would be eliminated in the output. To deal with this matter, you need to relax our restriction in the study (and in the main `.py` and data and association `.ipynb` files) before training as we considered only genes that were annotated by all three GO sub-ontologies.
 
 ## Cite
 
