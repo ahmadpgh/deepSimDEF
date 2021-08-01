@@ -14,8 +14,8 @@ import tensorflow as tf
 tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
 from networks import deepSimDEF_network
-from datasets import ppi_dataset
-from dataloaders import generic_dataloader
+from datasets import ppi_dataset, generic_production_dataset
+from dataloaders import generic_dataloader, generic_production_dataloader
 
 from sklearn.metrics import f1_score
 
@@ -34,10 +34,13 @@ checkpoint = None
 parser = argparse.ArgumentParser(description='Calculate gene-product pairs similarity.')
 
 # experiment arguments
+parser.add_argument('--deepsimdef_mode', default='training', type=str, help='mode of the model can be either "training", "evaluation", or "production"')
 parser.add_argument('--nb_fold', default=10, type=int, help='number of folds of training and evaluation in n-fold cross-validation (default: 10)')
 parser.add_argument('--iea', default=True, type=str2bool, help='whether to consider "inferred from electronic annotations" or not')
 parser.add_argument('--sub_ontology', default='all', type=str, help='considering annotations of what subontologies, "bp", "cc", "mf", or "all" (default: "all")')
 parser.add_argument('--inpute_file', default='default', type=str, help='inpute file of the gene product terms and the score(s), if not provide use default file')
+parser.add_argument('--production_input_file', default='', type=str, help='test file of the gene product terms used in production mode (you should provide directory too)')
+parser.add_argument('--production_output_file', default='', type=str, help='result file of the gene product terms used in production mode (you should provide directory too)')
 parser.add_argument('--experiment_mode', default=2, type=int, help='1: any pairs of unseen genes; 2: only pair in which both genes are unseen')
 parser.add_argument('--partial_shuffle_percent', default=0.0, type=float, help='Should be more than 0.0 for "Negative Control" experiments (default: 0.0)')
 parser.add_argument('--cutoff', default=True, type=str2bool, help='whether to consider finding a proper cutoff point (on predicted probabilities) in binary classification')
@@ -57,7 +60,7 @@ parser.add_argument('--highway_layer', default=True, type=str2bool, help='True i
 parser.add_argument('--cosine_similarity', default=False, type=str2bool, help='True cosince similarity instead of highway layer (default: False)')
 
 # training arguments
-parser.add_argument('--nb_epoch', default=400, type=int, help='number of epochs for training')
+parser.add_argument('--nb_epoch', default=10, type=int, help='number of epochs for training')
 parser.add_argument('--batch_size', default=256, type=int, help='batch size (default: 256)')
 parser.add_argument('--loss', default='binary_crossentropy', type=str, help='loss type of the onjective function that gets optimized ("binary_crossentropy" or "mean_squared_error")')
 parser.add_argument('--optimizer', default='adam', type=str, help='optimizer algorithm, can be: "adam", "rmsprop", etc. (default: "adam")')
@@ -187,129 +190,196 @@ def fit_ppi(models, args):
             log_epoch_result_for_ppi(e+1, args.nb_epoch, current_iteration_elapsed, 
                              best_cv_f1_measure*100, f1_res*100, best_epoch, logdir)
 
+def eval_ppi(models, args):
+    """if we need the cutoff point for accuracy"""
+    if args.cutoff: seq = np.round(np.arange(0.15, 0.9, 0.01), 2)
+    else: seq = [0.5]
+
+    _model_cutoff_preds = []
+
+    preds = []
+    for model_index in range(len(models)): # Going through each model one by one
+        _model_cutoff_preds.append({})
+        train_pair, X_train, y_train, test_pair, X_test, y_test, train_gene, test_gene = generic_dataloader(
+                        model_index, nb_test_genes, gene_shuffled_indx, gene_1, gene_2, fully_annotated_genes,
+                        gene_1_annotation, gene_2_annotation, prediction_value, sub_ontology_interested,
+                        args.experiment_mode)
+
+        # Training and Prediction
+        model = models[model_index]
+        if args.nb_fold!=1: # Only evaluation and report in n-fold cross-validation set up
+            res = model.predict(X_test)
+            # Finding the proper cutoff point
+            for cutoff in seq:
+                predictions = np.asarray(1*(cutoff<res))
+                _model_cutoff_preds[model_index][cutoff] = np.round(f1_score(y_test, predictions, average='binary'), 5)
+            #finding the best f1_measure and the best cutoff point
+            f1_measure = max(_model_cutoff_preds[model_index].items(), key=operator.itemgetter(1))[1]
+            thresholds[model_index] = max(_model_cutoff_preds[model_index].items(), key=operator.itemgetter(1))[0]
+            print(f">>> F1-score (fold {(model_index+1):2d}): {(f1_measure*100):.2f}")
+            preds.append(f1_measure)
+
+    final_res = 0
+    best_cutoff = 0
+    for cutoff in seq:
+        final_res_temp = 0
+        for model_index in range(len(models)):
+            final_res_temp += _model_cutoff_preds[model_index][cutoff]/len(models)
+        if final_res < final_res_temp:
+            final_res = final_res_temp
+            best_cutoff = cutoff
+    print(f">>> Final F1-score (averaged over folds with classification cutoff {best_cutoff}): {(final_res*100):.2f}")
+
 
 if __name__ == "__main__":
 
     args = parser.parse_args()
 
     # some assertions before proceeding
+    assert not ((args.deepsimdef_mode == 'evaluation') and (checkpoint is None)), "'checkpoint' cann't be None in 'evaluation' mode of '--deepsimdef_mode' as the model needs a trained deepSimDEF network"
+    assert not ((args.deepsimdef_mode == 'production') and (checkpoint is None)), "'checkpoint' cann't be None in 'production' mode of '--deepsimdef_mode' as the model needs a trained deepSimDEF network"
+    assert not ((args.deepsimdef_mode == 'production') and (not os.path.isfile(args.production_input_file))), "the provided 'args.production_input_file' does not exist, provide proper directory"
     assert not ((args.nb_fold == 1) and (args.save_interval == -1)), "'--save_interval' cann't be -1  when '--nb_fold' is 1; define a 'positive integer' interval"
     assert not (args.highway_layer and args.cosine_similarity), "Either '--highway_layer' can be True or '--cosine_similarity', not both."
 
-    # printing out the argument of the model
-    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-    print("Arguments are:")
-    pp.pprint(vars(args))
-    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
+    if args.deepsimdef_mode=='training' or args.deepsimdef_mode=='evaluation':
 
-    # directory to the files needed for traning and testing
-    if args.inpute_file=='default':
-        data_file_name = f'{args.species}_protein_protein_interaction.tsv'
-    else:
-        data_file_name = args.inpute_file
-    ppi_data_dir = './data/species/{}/ppi/processed'.format(args.species) # directory to the ppi datasets, pay attention to the file names and thier content format
-    embedding_dir = f'./data/gene_ontology/definition_embedding/{args.embedding_dim}_dimensional' # directory to the GO term embeddings, pay attention to the file names and thier content format
-    gene_annotations_dir = './data/species/{}/association_file/processed'.format(args.species) # directory to the gene annotations, pay attention to the file names and thier content format
+        # printing out the argument of the model
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print("Arguments are:")
+        pp.pprint(vars(args))
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
 
-    # set RNG
-    if args.reproducible: make_reproducible(args.seed)
+        # directory to the files needed for traning and testing
+        if args.inpute_file=='default':
+            data_file_name = f'{args.species}_protein_protein_interaction.tsv'
+        else:
+            data_file_name = args.inpute_file
+        ppi_data_dir = './data/species/{}/ppi/processed'.format(args.species) # directory to the ppi datasets, pay attention to the file names and thier content format
+        embedding_dir = f'./data/gene_ontology/definition_embedding/{args.embedding_dim}_dimensional' # directory to the GO term embeddings, pay attention to the file names and thier content format
+        gene_annotations_dir = './data/species/{}/association_file/processed'.format(args.species) # directory to the gene annotations, pay attention to the file names and thier content format
 
-    # some variables needed to work with sub-ontologies
-    if args.sub_ontology=='all': sub_ontology_interested = ['BP', 'CC', 'MF']
-    elif args.sub_ontology=='bp': sub_ontology_interested = ['BP']
-    elif args.sub_ontology=='cc': sub_ontology_interested = ['CC']
-    elif args.sub_ontology=='mf': sub_ontology_interested = ['MF']
-    sub_ontology_all = ['BP', 'CC', 'MF'] # for experimets, to make sure all genes have annotations from all three ontologies
+        # set RNG
+        if args.reproducible: make_reproducible(args.seed)
 
-    # do we use a checkpointed model, if not we can set it
-    if args.checkpoint is None:
-        args.log_name = f"{args.log_name}_{args.species}/pretrained_emb_{args.pretrained_embedding}_iea_{args.iea}_ontology_{args.sub_ontology}"
-        logdir, checkpoint_baseline = log(args)
-    else:
-        logdir = args.checkpoint.rsplit("/", 2)[0]
-        checkpoint_baseline = int(args.checkpoint.rsplit("_")[-1])
-        args.log_name = checkpoint.rsplit("/", 3)[0]
+        # some variables needed to work with sub-ontologies
+        if args.sub_ontology=='all': sub_ontology_interested = ['BP', 'CC', 'MF']
+        elif args.sub_ontology=='bp': sub_ontology_interested = ['BP']
+        elif args.sub_ontology=='cc': sub_ontology_interested = ['CC']
+        elif args.sub_ontology=='mf': sub_ontology_interested = ['MF']
+        sub_ontology_all = ['BP', 'CC', 'MF'] # for experimets, to make sure all genes have annotations from all three ontologies
 
-    print(f"The checkpoint directory is: '{logdir}'\n")
+        # do we use a checkpointed model, if not we can set it
+        if args.checkpoint is None:
+            args.log_name = f"{args.log_name}_{args.species}/pretrained_emb_{args.pretrained_embedding}_iea_{args.iea}_ontology_{args.sub_ontology}"
+            logdir, checkpoint_baseline = log(args)
+        else:
+            logdir = args.checkpoint.rsplit("/", 2)[0]
+            checkpoint_baseline = int(args.checkpoint.rsplit("_")[-1])
+            args.log_name = checkpoint.rsplit("/", 3)[0]
 
-    # some variables to work with GO-term embeddings later
-    go_term_embedding_file_path = {}  # directory of embedding files (for every subontolgy)
-    go_term_embedding_save_in = {}  # files into which the updated GO term embeddings will be stored
-    for sbo in sub_ontology_interested:
-        go_term_embedding_file_path[sbo] = '{}/GO_{}_Embeddings_{}D.emb'.format(embedding_dir, sbo, args.embedding_dim)
-        go_term_embedding_save_in[sbo] = 'GO_{}_Embeddings_{}D_Updated'.format(sbo, args.embedding_dim)
-    
-    # getting GO annotations
-    gene_indeces, gene_annotations, go_term_indeces, max_ann_len, max_ann_len_indx = extract_annotation_2nd_form(
-        sub_ontology_all, gene_annotations_dir, args.iea, args.verbose)
+        print(f"The checkpoint directory is: '{logdir}'\n")
 
-    fully_annotated_genes = []  # we keep only those genes for which we have annatoation from all sub-ontologies
-    for sbo in sub_ontology_all:
-        fully_annotated_genes.append(gene_indeces[sbo].keys())
-    fully_annotated_genes = sorted(list(set(fully_annotated_genes[0]).intersection(*fully_annotated_genes)))
-
-    if args.verbose: print("Number of fully annotated gene products: {}\n".format(len(fully_annotated_genes)))
-
-    """Shuffling the genes"""
-    gene_shuffled_indx = np.arange(len(fully_annotated_genes))
-    np.random.shuffle(gene_shuffled_indx)
-    VALIDATION_SPLIT = 1.0/args.nb_fold
-    nb_test_genes = int(VALIDATION_SPLIT * len(fully_annotated_genes))
-
-    gene_1, gene_2, gene_1_annotation, gene_2_annotation, prediction_value = ppi_dataset(
-        ppi_data_dir, data_file_name, fully_annotated_genes, 
-        gene_annotations, gene_indeces, max_ann_len, args.partial_shuffle_percent, sub_ontology_interested)
-
-    VALIDATION_SPLIT = 1.0/args.nb_fold
-    gene_pair_indx = np.arange(gene_1_annotation[sub_ontology_interested[0]].shape[0])
-    np.random.shuffle(gene_pair_indx)
-    nb_test_gene_pairs = int(VALIDATION_SPLIT * gene_1_annotation[sub_ontology_interested[0]].shape[0])
-
-    if args.verbose:
+        # some variables to work with GO-term embeddings later
+        go_term_embedding_file_path = {}  # directory of embedding files (for every subontolgy)
+        go_term_embedding_save_in = {}  # files into which the updated GO term embeddings will be stored
         for sbo in sub_ontology_interested:
-            print("Shape of data tensor for gene 1 ({}): {}".format(sbo, gene_1_annotation[sbo].shape))
-            print("Shape of data tensor for gene 2 ({}): {}\n".format(sbo, gene_2_annotation[sbo].shape))
-        print("Shape of output ppi tensors: {}\n".format(prediction_value.shape))
-
-    models = []
-    best_f1_measures = []
-    thresholds = []
-    for m in range(args.nb_fold):
-        network = deepSimDEF_network(
-            embedding_dim=args.embedding_dim, 
-            model_ind=m, 
-            max_ann_len=max_ann_len, 
-            go_term_embedding_file_path=go_term_embedding_file_path,
-            sub_ontology_interested=sub_ontology_interested,
-            go_term_indeces=go_term_indeces, 
-            activation_hidden=args.activation_hidden, 
-            activation_highway=args.activation_highway, 
-            activation_output=args.activation_output, 
-            dropout=args.dropout,
-            embedding_dropout=args.embedding_dropout,
-            annotation_dropout=args.annotation_dropout,
-            pretrained_embedding=args.pretrained_embedding,
-            updatable_embedding=args.updatable_embedding,
-            loss=args.loss,
-            optimizer=args.optimizer,
-            learning_rate=args.learning_rate,
-            checkpoint=args.checkpoint,
-            verbose=args.verbose,
-            highway_layer=args.highway_layer,
-            cosine_similarity=args.cosine_similarity
-        )
-        models.append(network)
-        best_f1_measures.append(0)
-        thresholds.append(0)
-
-    fit_ppi(models, args)
-
-    save_model(path=logdir, models=models, epoch=args.nb_epoch, verbose=args.verbose)
+            go_term_embedding_file_path[sbo] = '{}/GO_{}_Embeddings_{}D.emb'.format(embedding_dir, sbo, args.embedding_dim)
+            go_term_embedding_save_in[sbo] = 'GO_{}_Embeddings_{}D_Updated'.format(sbo, args.embedding_dim)
         
-    save_embeddings(path=logdir,
-        models=models,
-        go_term_indeces=go_term_indeces,
-        sub_ontology_interested=sub_ontology_interested,
-        embedding_save=go_term_embedding_save_in,
-        epoch=args.nb_epoch,
-        verbose=args.verbose)
+        # getting GO annotations
+        gene_indeces, gene_annotations, go_term_indeces, max_ann_len, max_ann_len_indx = extract_annotation_2nd_form(
+            sub_ontology_all, gene_annotations_dir, args.iea, args.verbose)
+
+        fully_annotated_genes = []  # we keep only those genes for which we have annatoation from all sub-ontologies
+        for sbo in sub_ontology_all:
+            fully_annotated_genes.append(gene_indeces[sbo].keys())
+        fully_annotated_genes = sorted(list(set(fully_annotated_genes[0]).intersection(*fully_annotated_genes)))
+
+        if args.verbose: print("Number of fully annotated gene products: {}\n".format(len(fully_annotated_genes)))
+
+        """Shuffling the genes"""
+        gene_shuffled_indx = np.arange(len(fully_annotated_genes))
+        np.random.shuffle(gene_shuffled_indx)
+        VALIDATION_SPLIT = 1.0/args.nb_fold
+        nb_test_genes = int(VALIDATION_SPLIT * len(fully_annotated_genes))
+
+        gene_1, gene_2, gene_1_annotation, gene_2_annotation, prediction_value = ppi_dataset(
+            ppi_data_dir, data_file_name, fully_annotated_genes, 
+            gene_annotations, gene_indeces, max_ann_len, args.partial_shuffle_percent, sub_ontology_interested)
+
+        VALIDATION_SPLIT = 1.0/args.nb_fold
+        gene_pair_indx = np.arange(gene_1_annotation[sub_ontology_interested[0]].shape[0])
+        np.random.shuffle(gene_pair_indx)
+        nb_test_gene_pairs = int(VALIDATION_SPLIT * gene_1_annotation[sub_ontology_interested[0]].shape[0])
+
+        if args.verbose:
+            for sbo in sub_ontology_interested:
+                print("Shape of data tensor for gene 1 ({}): {}".format(sbo, gene_1_annotation[sbo].shape))
+                print("Shape of data tensor for gene 2 ({}): {}\n".format(sbo, gene_2_annotation[sbo].shape))
+            print("Shape of output ppi tensors: {}\n".format(prediction_value.shape))
+
+        models = []
+        best_f1_measures = []
+        thresholds = []
+        for m in range(args.nb_fold):
+            network = deepSimDEF_network(args, model_ind=m, max_ann_len=max_ann_len, go_term_embedding_file_path=go_term_embedding_file_path, 
+                sub_ontology_interested=sub_ontology_interested, go_term_indeces=go_term_indeces)
+            models.append(network)
+            best_f1_measures.append(0)
+            thresholds.append(0)
+
+        if args.deepsimdef_mode=='training':
+            fit_ppi(models, args)
+            save_model(path=logdir, models=models, epoch=args.nb_epoch, verbose=args.verbose)
+            save_embeddings(path=logdir,
+                models=models,
+                go_term_indeces=go_term_indeces,
+                sub_ontology_interested=sub_ontology_interested,
+                embedding_save=go_term_embedding_save_in,
+                epoch=args.nb_epoch,
+                verbose=args.verbose)
+
+        elif args.deepsimdef_mode=='evaluation':
+            eval_ppi(models, args)
+
+    elif args.deepsimdef_mode=='production':
+
+        data_file_dir, data_file_name = os.path.dirname(args.production_input_file), os.path.basename(args.production_input_file)
+        gene_annotations_dir = './data/species/{}/association_file/processed'.format(args.species) # directory to the gene annotations, pay attention to the file names and thier content format
+
+        # some variables needed to work with sub-ontologies
+        if args.sub_ontology=='all': sub_ontology_interested = ['BP', 'CC', 'MF']
+        elif args.sub_ontology=='bp': sub_ontology_interested = ['BP']
+        elif args.sub_ontology=='cc': sub_ontology_interested = ['CC']
+        elif args.sub_ontology=='mf': sub_ontology_interested = ['MF']
+        sub_ontology_all = ['BP', 'CC', 'MF'] # to make sure all genes have annotations from all three ontologies, modify this if you want to work with single channel networks
+
+        gene_indeces, gene_annotations, go_term_indeces, max_ann_len, max_ann_len_indx = extract_annotation_2nd_form(
+            sub_ontology_all, gene_annotations_dir, args.iea, args.verbose)
+
+        fully_annotated_genes = []  # we keep only those genes for which we have annatoation from all sub-ontologies
+        for sbo in sub_ontology_all:
+            fully_annotated_genes.append(gene_indeces[sbo].keys())
+        fully_annotated_genes = sorted(list(set(fully_annotated_genes[0]).intersection(*fully_annotated_genes)))
+
+        gene_1, gene_2, gene_1_annotation, gene_2_annotation = generic_production_dataset(
+            data_file_dir, data_file_name, fully_annotated_genes, 
+            gene_annotations, gene_indeces, max_ann_len, sub_ontology_interested)
+
+        model = deepSimDEF_network(args, model_ind=0)
+
+        test_pair, X_test, test_gene = generic_production_dataloader(gene_1, gene_2, fully_annotated_genes,
+            gene_1_annotation, gene_2_annotation, sub_ontology_interested)
+
+        preds = model.predict(X_test)
+
+        if len(args.production_output_file)==0:
+            for i, (pair, pred) in enumerate(zip(test_pair, preds)):
+                #print("{}\t{}\t{:.8f}".format(i+1, pair.replace(" ", "\t"), pred[0]))
+                print("{}\t{:.8f}".format(pair.replace(" ", "\t"), pred[0]))
+        else:
+            with open(args.production_output_file, "w") as wf:
+                for i, (pair, pred) in enumerate(zip(test_pair, preds)):
+                    #print("{}\t{}\t{:.8f}".format(i+1, pair.replace(" ", "\t"), pred[0]))
+                    wf.write("{}\t{:.8f}\n".format(pair.replace(" ", "\t"), pred[0]))

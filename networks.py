@@ -45,11 +45,25 @@ def highway(value, activation="tanh", transform_gate_bias=-1.0):
     value = Add()([transformed_gated, identity_gated])
     return value
 
-def deepSimDEF_network(embedding_dim, model_ind, max_ann_len, go_term_embedding_file_path, sub_ontology_interested,
-                      go_term_indeces, activation_hidden, activation_highway, activation_output,
-                      dropout, embedding_dropout, annotation_dropout, loss, optimizer, learning_rate, checkpoint,
-                      pretrained_embedding=True, updatable_embedding=True, model_summary=False, verbose=True, 
-                      highway_layer=True, cosine_similarity=False):
+def deepSimDEF_network(args, model_ind, max_ann_len=None, go_term_embedding_file_path=None, sub_ontology_interested=None, go_term_indeces=None, model_summary=False):
+
+    embedding_dim = args.embedding_dim
+    activation_hidden = args.activation_hidden
+    activation_highway = args.activation_highway
+    activation_output = args.activation_output
+    dropout = args.dropout
+    embedding_dropout = args.embedding_dropout
+    annotation_dropout = args.annotation_dropout
+    pretrained_embedding = args.pretrained_embedding
+    updatable_embedding = args.updatable_embedding
+    loss = args.loss
+    optimizer = args.optimizer
+    learning_rate = args.learning_rate
+    checkpoint = args.checkpoint
+    verbose = args.verbose
+    highway_layer = args.highway_layer
+    cosine_similarity = args.cosine_similarity
+    deepsimdef_mode = args.deepsimdef_mode
     
     _inputs = [] # used to represent the input data to the network (from different channels)
     _embeddings = {} # used for weight-sharing of the embeddings
@@ -60,7 +74,8 @@ def deepSimDEF_network(embedding_dim, model_ind, max_ann_len, go_term_embedding_
         with open('{}/model_{}.json'.format(checkpoint, model_ind+1), 'r') as json_file:
             model = model_from_json(json_file.read()) # load the json model
             model.load_weights('{}/model_{}.h5'.format(checkpoint, model_ind+1)) # load weights into new model
-            model.compile(loss=loss, optimizer=optimizer)
+            if deepsimdef_mode=='training':
+                model.compile(loss=loss, optimizer=optimizer)
             if verbose: print("Loaded model {} from disk".format(model_ind+1))
             return model
 

@@ -55,3 +55,42 @@ def generic_dataloader(model_id, nb_test_genes, gene_shuffled_indx, gene_1, gene
     y_test = prediction_value[test_indices]
 
     return Gene_train_pair, X_train_G1 + X_train_G2, y_train, Gene_test_pair, X_test_G1 + X_test_G2, y_test, fully_annotated_genes_train, fully_annotated_genes_test
+
+
+def generic_production_dataloader(gene_1, gene_2, fully_annotated_genes, 
+                   gene_1_annotation, gene_2_annotation, sub_ontology_interested):
+
+    gene_indices_4_test = np.arange(len(fully_annotated_genes))
+    fully_annotated_genes_test = np.asarray(fully_annotated_genes)[gene_indices_4_test].tolist()
+        
+    def _gene_list_to_gene_indeces_dict(genes):
+        g_dic = {}
+        for i, g in enumerate(genes):
+            if g in g_dic:
+                g_dic[g].add(i)
+            else:
+                g_dic[g] = {i} # starting point as a set
+        return g_dic  # example {'S000003325': {0, 14756, 24551}, ..., 'S000000956': {9, 18615, 18, 15156}}
+    
+    g1_dic = _gene_list_to_gene_indeces_dict(gene_1)
+    g2_dic = _gene_list_to_gene_indeces_dict(gene_2)
+
+    for k in fully_annotated_genes_test: # keeping the ppi indeces for which the associated gene is NOT among the test genes
+        g1_dic.pop(k, None) # removing test genes from g1_dic
+        g2_dic.pop(k, None) # removing test genes from g2_dic
+
+    g1_ind, g2_ind = set(), set()
+    for g in g1_dic: g1_ind.update(g1_dic[g])
+    for g in g2_dic: g2_ind.update(g2_dic[g])
+
+    Gene_test_pair = [" ".join(i) for i in np.array(list(zip(gene_1, gene_2)))]
+    
+    X_test_G1, X_test_G2 = [], []
+    
+    for sbo in sub_ontology_interested:
+
+        # test data
+        X_test_G1.append(gene_1_annotation[sbo])
+        X_test_G2.append(gene_2_annotation[sbo])
+        
+    return Gene_test_pair, X_test_G1 + X_test_G2, fully_annotated_genes_test
