@@ -59,7 +59,7 @@ parser.add_argument('--highway_layer', default=True, type=str2bool, help='True i
 parser.add_argument('--cosine_similarity', default=False, type=str2bool, help='True cosince similarity instead of highway layer (default: False)')
 
 # training arguments
-parser.add_argument('--nb_epoch', default=10, type=int, help='number of epochs for training')
+parser.add_argument('--nb_epoch', default=400, type=int, help='number of epochs for training')
 parser.add_argument('--batch_size', default=256, type=int, help='batch size (default: 256)')
 parser.add_argument('--loss', default='mean_squared_error', type=str, help='loss type of the onjective function that gets optimized ("binary_crossentropy" or "mean_squared_error")')
 parser.add_argument('--optimizer', default='adam', type=str, help='optimizer algorithm, can be: "adam", "rmsprop", etc. (default: "adam")')
