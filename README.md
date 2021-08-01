@@ -188,12 +188,8 @@ deepSimDEF paper, and aforementioned code, and dataset:
 @article{pesaranghader2016simdef,
   title={simDEF: definition-based semantic similarity measure of gene ontology terms for functional similarity analysis of genes},
   author={Pesaranghader, Ahmad and Matwin, Stan and Sokolova, Marina and Beiko, Robert G},
-  journal={Bioinformatics},
-  volume={32},
-  number={9},
-  pages={1380--1387},
-  year={2016},
-  publisher={Oxford University Press}
+  journal={Bioinformatics}, volume={32}, number={9},
+  pages={1380--1387}, year={2016}, publisher={Oxford University Press}
 }
 ```
 <sub>Ahmad Pesaranghader © 2021</sub>
