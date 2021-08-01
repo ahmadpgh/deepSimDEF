@@ -158,7 +158,7 @@ We recommend running these scripts on GPUs with a command similar to:
 ```
 CUDA_VISIBLE_DEVICES=gpu-number python deepSimDEF_for_protein_protein_interaction.py arguments
 ```
-A sample of such run for human species and BP sub-ontology (hence single-channel deepSimDEF) could be:
+A sample of such run for human species and BP sub-ontology (hence single-channel deepSimDEF) would be:
 ```
 CUDA_VISIBLE_DEVICES=0 python deepSimDEF_for_protein_protein_interaction.py --species human --sub_ontology bp
 ```
@@ -167,6 +167,8 @@ All these scripts make use of the deepSimDEF network implementation provided in 
 * In **training mode**, as the name suggests, the model(s) would be trained and evaluated on the fly (number of models would be equal to the number of folds). During this process, the statistical results would be logged and the network(s) would be checkpointed according to the provided setting in the arguments. For training and evaluation, by default, the model(s) use data provided with this project unless you provide another set of data with `--inpute_file` (ideally prepared by the preparation `.ipynb` files).
 * In **evaluation mode**, after providing checkpointed model(s), the statistical results of interests for the test split(s) would be printed out (should obtain similar results from the same epoch in the training mode). These statistical results are F1-score for the PPI experiment, and Pearson's and Spearman's correlation values for the sequence homology and gene expression experiments.
 * In **production mode**, after providing a checkpointed model (typically "trained" on all existing data by setting `--nb_fold 1`) as well as a file of (typically new) gene-product pairs, the estimated scores of them would be saved or printed out. For this purpose, in the `--production_input_file` each gene-product pair should be shown on one line while gene names are separated by a tab or space). NOTICE: In this mode, if a gene in the gene pair is not present in the given processed association files or it has GO annotations not seen before during training, their pairs would be eliminated in the output. To deal with this matter, before training a model, you need to make sure the association files are up-to-date, and also relax our restriction in the study (i.e., modify the main `.py` and data and association `.ipynb` files as we consider only genes that are annotated by all three GO sub-ontologies).
+
+Depending also on the GO sub-ontology of your choice using the argument `--sub_ontology`, if you provide `bp`, `cc`, or `mf`, automatically single-channel deepSimDEF would be set. However, if `--sub_ontology all` (default) muli-channel deepSimDEF would be used. These types of settings should be consistent among the deepSimDEF modes described above.
 
 ## Cite
 
