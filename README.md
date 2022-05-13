@@ -174,14 +174,14 @@ Depending also on the GO sub-ontology of your choice using the argument `--sub_o
 
 Please cite our papers, code, and dataset if you use them in your work.
 
-deepSimDEF paper, and aforementioned code, and dataset:
+[deepSimDEF](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btac304/6583182) paper, and aforementioned code, and dataset:
 ```
 @article{,
   title = {deepSimDEF: deep neural embeddings of gene products and Gene Ontology terms for functional analysis of genes},
   author = {Pesaranghader, Ahmad and Matwin, Stan and Sokolova, Marina and Grenier, Jean-Christophe and Beiko, Robert G and Hussin, Julie},
-  journal = {under review},
-  year = {2021},
-  publisher={under review}
+  journal = {Bioinformatics},
+  year = {2022},
+  publisher={Oxford University Press}
 }
 ```
 
