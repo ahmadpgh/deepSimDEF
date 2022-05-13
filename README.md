@@ -176,7 +176,7 @@ Please cite our papers, code, and dataset if you use them in your work.
 
 [deepSimDEF](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btac304/6583182) paper, and aforementioned code, and dataset:
 ```
-@article{,
+@article{pesaranghader2022deepsimdef,
   title = {deepSimDEF: deep neural embeddings of gene products and Gene Ontology terms for functional analysis of genes},
   author = {Pesaranghader, Ahmad and Matwin, Stan and Sokolova, Marina and Grenier, Jean-Christophe and Beiko, Robert G and Hussin, Julie},
   journal = {Bioinformatics},
